@@ -10,6 +10,8 @@
         <entry key="..\:/android project/TrackApp/app/src/main/res/layout/fragment_setup.xml" value="0.1" />
         <entry key="..\:/android project/TrackApp/app/src/main/res/layout/fragment_statistics.xml" value="0.10104166666666667" />
         <entry key="..\:/android project/TrackApp/app/src/main/res/layout/fragment_tracking.xml" value="0.10104166666666667" />
+        <entry key="..\:/android project/TrackApp/app/src/main/res/menu/bottom_nav_menu.xml" value="0.2265625" />
+        <entry key="..\:/android project/TrackApp/app/src/main/res/menu/toolbar_tracking_menu.xml" value="0.2265625" />
       </map>
     </option>
   </component>
