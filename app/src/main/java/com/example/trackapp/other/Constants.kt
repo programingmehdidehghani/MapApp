@@ -12,4 +12,8 @@ object Constants {
 
     const val ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE"
 
+    const val NOTIFICATION_CHANNEL_ID = "tracking_channel"
+
+    const val NOTIFICATION_CHANNEL_NAME = "tracking"
+
 }

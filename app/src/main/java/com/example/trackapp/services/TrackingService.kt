@@ -1,5 +1,7 @@
 package com.example.trackapp.services
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
 import androidx.lifecycle.LifecycleService
 import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
@@ -26,6 +28,10 @@ class TrackingService : LifecycleService(){
 
 
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun createNotificationChannel (notificationManager: NotificationManager){
+          val channel = NotificationChannel()
     }
 
 }
