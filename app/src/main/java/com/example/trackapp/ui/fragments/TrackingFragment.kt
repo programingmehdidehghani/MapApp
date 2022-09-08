@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.trackapp.R
+import com.example.trackapp.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.trackapp.services.TrackingService
 import com.example.trackapp.ui.viewModels.MainViewModel
 import com.google.android.gms.maps.GoogleMap
@@ -23,6 +24,10 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapView.onCreate(savedInstanceState)
+        btnToggleRun.setOnClickListener {
+            sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        }
+
         mapView.getMapAsync{
             map = it
         }
