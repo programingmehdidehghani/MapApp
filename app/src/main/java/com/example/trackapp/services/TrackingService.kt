@@ -1,5 +1,9 @@
 package com.example.trackapp.services
 
-class TrackingService{
+import androidx.lifecycle.LifecycleService
+
+class TrackingService : LifecycleService(){
+
     
+
 }
