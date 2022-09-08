@@ -3,15 +3,19 @@ package com.example.trackapp.services
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import com.example.trackapp.R
 import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.trackapp.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.trackapp.other.Constants.ACTION_STOP_SERVICE
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_NAME
+import com.example.trackapp.other.Constants.NOTIFICATION_ID
 import timber.log.Timber
 
 class TrackingService : LifecycleService(){
@@ -33,6 +37,21 @@ class TrackingService : LifecycleService(){
 
 
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun startForegroundService(){
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
+           as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            createNotificationChannel(notificationManager)
+        }
+        val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setAutoCancel(false)
+            .setOngoing(true)
+            .setSmallIcon(R.drawable.ic_directions_run_black_24dp)
+            .setContentTitle("Running App")
+            .setContentText("00:00:00")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
