@@ -1,10 +1,12 @@
 package com.example.trackapp.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.trackapp.R
+import com.example.trackapp.services.TrackingService
 import com.example.trackapp.ui.viewModels.MainViewModel
 import com.google.android.gms.maps.GoogleMap
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +27,12 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             map = it
         }
     }
+
+    private fun sendCommandToService(action : String) =
+        Intent(requireContext(),TrackingService::class.java).also{
+            it.action = action
+            requireContext().startService(it)
+        }
 
     override fun onResume() {
         super.onResume()
