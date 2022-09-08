@@ -24,11 +24,18 @@ import timber.log.Timber
 
 class TrackingService : LifecycleService(){
 
+    var isFirstRun = true
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             when(intent.action){
                 ACTION_START_OR_RESUME_SERVICE -> {
-                   Timber.d("started or resume service")
+                    if (isFirstRun){
+                        startForegroundService()
+                        isFirstRun = false
+                    } else {
+                        Timber.d("resuming service ...")
+                    }
                 }
                 ACTION_PAUSE_SERVICE -> {
                     Timber.d("paused service")
@@ -56,6 +63,9 @@ class TrackingService : LifecycleService(){
             .setSmallIcon(R.drawable.ic_directions_run_black_24dp)
             .setContentTitle("Running App")
             .setContentText("00:00:00")
+            .setContentIntent(getMainActivityPendingIntent())
+
+        startForeground(NOTIFICATION_ID,notificationBuilder.build())
     }
 
     private fun getMainActivityPendingIntent() = PendingIntent.getActivity(
