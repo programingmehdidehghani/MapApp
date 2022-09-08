@@ -11,4 +11,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
     private val viewModel : MainViewModel by viewModels()
+
+    
 }

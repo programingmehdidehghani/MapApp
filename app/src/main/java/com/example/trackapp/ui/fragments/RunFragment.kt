@@ -36,7 +36,7 @@ class RunFragment : Fragment(R.layout.fragment_run) , EasyPermissions.Permission
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
             EasyPermissions.requestPermissions(
                 this,
-                "you need to accept location permissins to use this app.",
+                "you need to accept location permissions to use this app.",
                 REQUEST_CODE_LOCATION_PERMISSION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -44,7 +44,7 @@ class RunFragment : Fragment(R.layout.fragment_run) , EasyPermissions.Permission
         } else {
             EasyPermissions.requestPermissions(
                 this,
-                "you need to accept location permissins to use this app.",
+                "you need to accept location permissions to use this app.",
                 REQUEST_CODE_LOCATION_PERMISSION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -53,9 +53,7 @@ class RunFragment : Fragment(R.layout.fragment_run) , EasyPermissions.Permission
         }
     }
 
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-
-    }
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {}
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         if (EasyPermissions.somePermissionPermanentlyDenied(this,perms)){
@@ -73,4 +71,6 @@ class RunFragment : Fragment(R.layout.fragment_run) , EasyPermissions.Permission
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
+
+
 }
