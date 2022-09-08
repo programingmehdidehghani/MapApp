@@ -3,6 +3,8 @@ package com.example.trackapp.services
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -11,11 +13,13 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import com.example.trackapp.R
 import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
+import com.example.trackapp.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.trackapp.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.trackapp.other.Constants.ACTION_STOP_SERVICE
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.trackapp.other.Constants.NOTIFICATION_ID
+import com.example.trackapp.ui.MainActivity
 import timber.log.Timber
 
 class TrackingService : LifecycleService(){
@@ -53,6 +57,15 @@ class TrackingService : LifecycleService(){
             .setContentTitle("Running App")
             .setContentText("00:00:00")
     }
+
+    private fun getMainActivityPendingIntent() = PendingIntent.getActivity(
+        this,
+        0,
+        Intent(this,MainActivity::class.java).also {
+            it.action = ACTION_SHOW_TRACKING_FRAGMENT
+        },
+        FLAG_UPDATE_CURRENT
+    )
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel (notificationManager: NotificationManager){
