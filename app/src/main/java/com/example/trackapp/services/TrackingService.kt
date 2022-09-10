@@ -24,13 +24,21 @@ import com.example.trackapp.ui.MainActivity
 import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
 
+typealias polyLine = MutableList<LatLng>
+typealias polyLines = MutableList<polyLine>
+
 class TrackingService : LifecycleService(){
 
     var isFirstRun = true
 
     companion object {
         val isTracking = MutableLiveData<Boolean>()
-        val pathPoints = MutableLiveData<MutableList<MutableList<LatLng>>>()
+        val pathPoints = MutableLiveData<polyLines>()
+    }
+
+    private fun postInitialValves (){
+        isTracking.postValue(false)
+        pathPoints.postValue(mutableListOf())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -55,6 +63,10 @@ class TrackingService : LifecycleService(){
 
 
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun addEmptyPolyline() = pathPoints.value?.apply {
+        
     }
 
     private fun startForegroundService(){
