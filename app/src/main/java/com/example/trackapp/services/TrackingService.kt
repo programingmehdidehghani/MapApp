@@ -11,6 +11,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.MutableLiveData
 import com.example.trackapp.R
 import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.trackapp.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
@@ -20,11 +21,17 @@ import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.trackapp.other.Constants.NOTIFICATION_ID
 import com.example.trackapp.ui.MainActivity
+import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
 
 class TrackingService : LifecycleService(){
 
     var isFirstRun = true
+
+    companion object {
+        val isTracking = MutableLiveData<Boolean>()
+        val pathPoints = MutableLiveData<MutableList<MutableList<LatLng>>>()
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
