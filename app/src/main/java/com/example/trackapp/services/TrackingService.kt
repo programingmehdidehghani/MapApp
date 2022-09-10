@@ -9,10 +9,12 @@ import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Build
+import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.example.trackapp.R
 import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.trackapp.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
@@ -25,6 +27,7 @@ import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.trackapp.other.Constants.NOTIFICATION_ID
 import com.example.trackapp.other.TrackingUtility
 import com.example.trackapp.ui.MainActivity
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -38,6 +41,8 @@ class TrackingService : LifecycleService(){
 
     var isFirstRun = true
 
+    lateinit var fusedLocationProviderClient : FusedLocationProviderClient
+
     companion object {
         val isTracking = MutableLiveData<Boolean>()
         val pathPoints = MutableLiveData<polyLines>()
@@ -46,6 +51,16 @@ class TrackingService : LifecycleService(){
     private fun postInitialValves (){
         isTracking.postValue(false)
         pathPoints.postValue(mutableListOf())
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        postInitialValves()
+        fusedLocationProviderClient = FusedLocationProviderClient(this)
+
+        isTracking.observe(this, Observer {
+            updateLocationTracking(it)
+        })
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -80,7 +95,14 @@ class TrackingService : LifecycleService(){
                     fastestInterval = FASTEST_LOCATION_INTERVAL
                     priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                 }
+                fusedLocationProviderClient.requestLocationUpdates(
+                    request,
+                    locationCallback,
+                    Looper.getMainLooper()
+                )
             }
+        } else {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         }
     }
 
@@ -101,6 +123,7 @@ class TrackingService : LifecycleService(){
                result?.locations.let { locations ->
                    for (location in locations){
                       addPathPoint(location)
+                       Timber.d("NEW LOCATION : ${location.latitude}, ${location.longitude}")
                    }
                }
             }
@@ -114,6 +137,8 @@ class TrackingService : LifecycleService(){
 
     private fun startForegroundService(){
         addEmptyPolyline()
+        isTracking.postValue(true)
+
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
            as NotificationManager
 
