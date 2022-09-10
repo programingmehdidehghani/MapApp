@@ -22,6 +22,8 @@ import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.trackapp.other.Constants.NOTIFICATION_ID
 import com.example.trackapp.ui.MainActivity
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
 
@@ -74,6 +76,17 @@ class TrackingService : LifecycleService(){
                  pathPoints.postValue(this)
              }
          }
+    }
+
+    val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(result: LocationResult) {
+            super.onLocationResult(result)
+            if (isTracking.value!!){
+               result?.locations.let {
+                   
+               }
+            }
+        }
     }
 
     private fun addEmptyPolyline() = pathPoints.value?.apply {
