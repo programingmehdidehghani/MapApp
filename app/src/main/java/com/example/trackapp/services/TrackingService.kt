@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -65,11 +66,23 @@ class TrackingService : LifecycleService(){
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun addEmptyPolyline() = pathPoints.value?.apply {
-        
+    private fun addPathPoint(location: Location?){
+         location?.let {
+             val pos = LatLng(location.latitude, location.longitude)
+             pathPoints.value?.apply {
+                 last().add(pos)
+                 pathPoints.postValue(this)
+             }
+         }
     }
 
+    private fun addEmptyPolyline() = pathPoints.value?.apply {
+        add(mutableListOf())
+        pathPoints.postValue(this)
+    } ?: pathPoints.postValue(mutableListOf(mutableListOf()))
+
     private fun startForegroundService(){
+        addEmptyPolyline()
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
            as NotificationManager
 
