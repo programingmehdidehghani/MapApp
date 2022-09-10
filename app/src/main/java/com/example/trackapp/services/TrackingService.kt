@@ -18,11 +18,15 @@ import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.trackapp.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.trackapp.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.trackapp.other.Constants.ACTION_STOP_SERVICE
+import com.example.trackapp.other.Constants.FASTEST_LOCATION_INTERVAL
+import com.example.trackapp.other.Constants.LOCATION_UPDATE_INTERVAL
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.trackapp.other.Constants.NOTIFICATION_ID
+import com.example.trackapp.other.TrackingUtility
 import com.example.trackapp.ui.MainActivity
 import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
@@ -68,6 +72,18 @@ class TrackingService : LifecycleService(){
         return super.onStartCommand(intent, flags, startId)
     }
 
+    private fun updateLocationTracking(isTracking : Boolean){
+        if (isTracking){
+            if (TrackingUtility.hasLocationPermissions(this)){
+                val request = LocationRequest().apply {
+                    interval = LOCATION_UPDATE_INTERVAL
+                    fastestInterval = FASTEST_LOCATION_INTERVAL
+                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                }
+            }
+        }
+    }
+
     private fun addPathPoint(location: Location?){
          location?.let {
              val pos = LatLng(location.latitude, location.longitude)
@@ -82,8 +98,10 @@ class TrackingService : LifecycleService(){
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
             if (isTracking.value!!){
-               result?.locations.let {
-                   
+               result?.locations.let { locations ->
+                   for (location in locations){
+                      addPathPoint(location)
+                   }
                }
             }
         }
