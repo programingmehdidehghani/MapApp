@@ -6,12 +6,15 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.trackapp.R
+import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.trackapp.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.example.trackapp.other.Constants.MAP_ZOOM
 import com.example.trackapp.other.Constants.POLYLINE_COLOR
 import com.example.trackapp.other.Constants.POLYLINE_WIDTH
 import com.example.trackapp.services.TrackingService
 import com.example.trackapp.services.polyLine
 import com.example.trackapp.ui.viewModels.MainViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,8 +43,34 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         }
     }
 
+    private fun toggleRun () {
+        if (isTracking){
+            sendCommandToService(ACTION_PAUSE_SERVICE)
+        } else {
+            sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        }
+    }
+
+    private fun updateTracking(isTracking : Boolean){
+        this.isTracking = isTracking
+        if (!isTracking){
+           btnToggleRun.text = "Start"
+            btnFinishRun.visibility = View.VISIBLE
+        } else {
+            btnFinishRun.text = "Stop"
+            btnFinishRun.visibility = View.GONE
+        }
+    }
+
     private fun moveCameraToUser(){
-        
+        if (pathPoints.isNotEmpty() && pathPoints.last().isNotEmpty()){
+              map?.animateCamera(
+                  CameraUpdateFactory.newLatLngZoom(
+                      pathPoints.last().last(),
+                      MAP_ZOOM
+                  )
+              )
+        }
     }
 
     private fun addAllPolylines (){
