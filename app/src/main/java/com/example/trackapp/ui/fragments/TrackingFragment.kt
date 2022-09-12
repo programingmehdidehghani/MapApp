@@ -40,6 +40,20 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         }
     }
 
+    private fun moveCameraToUser(){
+        
+    }
+
+    private fun addAllPolylines (){
+        for (polyline in pathPoints){
+            val polylineOptions = PolylineOptions()
+                .color(POLYLINE_COLOR)
+                .width(POLYLINE_WIDTH)
+                .addAll(polyline)
+            map?.addPolyline(polylineOptions)
+        }
+    }
+
     private fun addLatestPolyline(){
         if (pathPoints.isEmpty() && pathPoints.last().size > 1){
             val preLastLatLng = pathPoints.last()[pathPoints.last().size -2]
