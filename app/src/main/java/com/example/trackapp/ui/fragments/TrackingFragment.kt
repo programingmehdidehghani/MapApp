@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import com.example.trackapp.R
 import com.example.trackapp.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.trackapp.services.TrackingService
+import com.example.trackapp.services.polyLine
 import com.example.trackapp.ui.viewModels.MainViewModel
 import com.google.android.gms.maps.GoogleMap
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +19,9 @@ import kotlinx.android.synthetic.main.fragment_tracking.*
 class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
     private val viewModel : MainViewModel by viewModels()
+
+    private var isTracking = false
+    private var pathPoints = mutableListOf<polyLine>()
 
     private var map : GoogleMap? = null
 
@@ -30,6 +34,13 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
         mapView.getMapAsync{
             map = it
+        }
+    }
+
+    private fun addLatestPolyline(){
+        if (pathPoints.isEmpty() && pathPoints.last().size > 1){
+            val preLastLatLng = pathPoints.last()[pathPoints.last().size -2]
+            val lastLatLng = pathPoints.last().last()
         }
     }
 
