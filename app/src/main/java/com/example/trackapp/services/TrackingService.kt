@@ -161,6 +161,9 @@ class TrackingService : LifecycleService() {
             isAccessible = true
             set(curNotificationBuilder,ArrayList<NotificationCompat.Action>())
         }
+        curNotificationBuilder = baseNotificationBuilder
+            .addAction(R.drawable.ic_pause_black_24dp,notificationActionText,pendingIntent)
+        notificationManager.notify(NOTIFICATION_ID,curNotificationBuilder.build())
     }
 
     private fun updateLocationTracking(isTracking: Boolean) {
@@ -224,6 +227,8 @@ class TrackingService : LifecycleService() {
 
 
         startForeground(NOTIFICATION_ID, baseNotificationBuilder.build())
+
+        
     }
 
 
