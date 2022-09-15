@@ -43,7 +43,10 @@ class TrackingService : LifecycleService(){
 
     lateinit var fusedLocationProviderClient : FusedLocationProviderClient
 
+    private val timeRunInSecond = MutableLiveData<Long>()
+
     companion object {
+        val timeRunMillis = MutableLiveData<Long>()
         val isTracking = MutableLiveData<Boolean>()
         val pathPoints = MutableLiveData<polyLines>()
     }
