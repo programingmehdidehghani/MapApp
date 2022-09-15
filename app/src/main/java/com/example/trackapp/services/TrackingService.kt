@@ -92,6 +92,12 @@ class TrackingService : LifecycleService(){
         return super.onStartCommand(intent, flags, startId)
     }
 
+    private var isTimeEnable = false
+    private var lapTime = 0L
+    private var timeRun = 0L
+    private var timeStarted = 0L
+    private var lastSecondTimeStamp = 0L
+
     private fun pauseService(){
           isTracking.postValue(false)
     }
