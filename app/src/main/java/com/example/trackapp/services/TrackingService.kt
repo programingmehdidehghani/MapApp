@@ -141,6 +141,21 @@ class TrackingService : LifecycleService() {
         isTimerEnable = false
     }
 
+
+    private fun updateNotificationTrackingState(isTracking: Boolean){
+        val notificationActionText = if (isTracking) "Pause" else "Resume"
+        val pendingIntent = if (isTracking) {
+            val pauseIntent = Intent(this,TrackingService::class.java).apply {
+                action = ACTION_PAUSE_SERVICE
+            }
+            PendingIntent.getService(this,1,pauseIntent, FLAG_UPDATE_CURRENT)
+        } else {
+            val resumeIntent = Intent(this,TrackingService::class.java).apply {
+                action = ACTION_START_OR_RESUME_SERVICE
+            }
+        }
+    }
+
     private fun updateLocationTracking(isTracking: Boolean) {
         if (isTracking) {
             if (TrackingUtility.hasLocationPermissions(this)) {
