@@ -153,6 +153,13 @@ class TrackingService : LifecycleService() {
             val resumeIntent = Intent(this,TrackingService::class.java).apply {
                 action = ACTION_START_OR_RESUME_SERVICE
             }
+            PendingIntent.getService(this,1,resumeIntent, FLAG_UPDATE_CURRENT)
+        }
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        curNotificationBuilder.javaClass.getDeclaredField("mActions").apply {
+            isAccessible = true
+            set(curNotificationBuilder,ArrayList<NotificationCompat.Action>())
         }
     }
 
