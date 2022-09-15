@@ -48,6 +48,7 @@ typealias polyLines = MutableList<polyLine>
 class TrackingService : LifecycleService() {
 
     var isFirstRun = true
+    var serviceKilled = false
 
     @Inject
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -86,6 +87,15 @@ class TrackingService : LifecycleService() {
         })
     }
 
+    private fun killService (){
+        serviceKilled = true
+        isFirstRun = true
+        pauseService()
+        postInitialValves()
+        stopForeground(true)
+        stopSelf()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             when (intent.action) {
@@ -104,6 +114,7 @@ class TrackingService : LifecycleService() {
                 }
                 ACTION_STOP_SERVICE -> {
                     Timber.d("stoped service")
+                    killService()
                 }
             }
         }
