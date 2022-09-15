@@ -42,11 +42,11 @@ import timber.log.Timber
 typealias polyLine = MutableList<LatLng>
 typealias polyLines = MutableList<polyLine>
 
-class TrackingService : LifecycleService(){
+class TrackingService : LifecycleService() {
 
     var isFirstRun = true
 
-    lateinit var fusedLocationProviderClient : FusedLocationProviderClient
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private val timeRunInSecond = MutableLiveData<Long>()
 
@@ -56,7 +56,7 @@ class TrackingService : LifecycleService(){
         val pathPoints = MutableLiveData<polyLines>()
     }
 
-    private fun postInitialValves (){
+    private fun postInitialValves() {
         isTracking.postValue(false)
         pathPoints.postValue(mutableListOf())
     }
@@ -73,14 +73,14 @@ class TrackingService : LifecycleService(){
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
-            when(intent.action){
+            when (intent.action) {
                 ACTION_START_OR_RESUME_SERVICE -> {
-                    if (isFirstRun){
+                    if (isFirstRun) {
                         startForegroundService()
                         isFirstRun = false
                     } else {
                         Timber.d("resuming service ...")
-                        startForegroundService()
+                        startTime()
                     }
                 }
                 ACTION_PAUSE_SERVICE -> {
@@ -103,31 +103,33 @@ class TrackingService : LifecycleService(){
     private var timeStarted = 0L
     private var lastSecondTimeStamp = 0L
 
-    private fun startTime (){
+    private fun startTime() {
         addEmptyPolyline()
         isTracking.postValue(true)
         timeStarted = System.currentTimeMillis()
         isTimerEnable = true
         CoroutineScope(Dispatchers.Main).launch {
-            while (isTracking.value!!){
+            while (isTracking.value!!) {
                 lapTime = System.currentTimeMillis() - timeStarted
                 timeRunInMillis.postValue(timeRun + lapTime)
-                if (timeRunInMillis.value!! >= lastSecondTimeStamp + 1000L){
-                     timeRunInSecond.postValue(timeRunInSecond.value!! + 1)
-                     lastSecondTimeStamp += 1000L
+                if (timeRunInMillis.value!! >= lastSecondTimeStamp + 1000L) {
+                    timeRunInSecond.postValue(timeRunInSecond.value!! + 1)
+                    lastSecondTimeStamp += 1000L
                 }
                 delay(TIME_UPDATE_INTERVAL)
             }
+            timeRun += lapTime
         }
     }
 
-    private fun pauseService(){
-          isTracking.postValue(false)
+    private fun pauseService() {
+        isTracking.postValue(false)
+        isTimerEnable = false
     }
 
-    private fun updateLocationTracking(isTracking : Boolean){
-        if (isTracking){
-            if (TrackingUtility.hasLocationPermissions(this)){
+    private fun updateLocationTracking(isTracking: Boolean) {
+        if (isTracking) {
+            if (TrackingUtility.hasLocationPermissions(this)) {
                 val request = LocationRequest().apply {
                     interval = LOCATION_UPDATE_INTERVAL
                     fastestInterval = FASTEST_LOCATION_INTERVAL
@@ -144,26 +146,26 @@ class TrackingService : LifecycleService(){
         }
     }
 
-    private fun addPathPoint(location: Location?){
-         location?.let {
-             val pos = LatLng(location.latitude, location.longitude)
-             pathPoints.value?.apply {
-                 last().add(pos)
-                 pathPoints.postValue(this)
-             }
-         }
+    private fun addPathPoint(location: Location?) {
+        location?.let {
+            val pos = LatLng(location.latitude, location.longitude)
+            pathPoints.value?.apply {
+                last().add(pos)
+                pathPoints.postValue(this)
+            }
+        }
     }
 
     val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
-            if (isTracking.value!!){
-               result?.locations.let { locations ->
-                   for (location in locations){
-                      addPathPoint(location)
-                       Timber.d("NEW LOCATION : ${location.latitude}, ${location.longitude}")
-                   }
-               }
+            if (isTracking.value!!) {
+                result?.locations.let { locations ->
+                    for (location in locations) {
+                        addPathPoint(location)
+                        Timber.d("NEW LOCATION : ${location.latitude}, ${location.longitude}")
+                    }
+                }
             }
         }
     }
@@ -173,14 +175,14 @@ class TrackingService : LifecycleService(){
         pathPoints.postValue(this)
     } ?: pathPoints.postValue(mutableListOf(mutableListOf()))
 
-    private fun startForegroundService(){
-        addEmptyPolyline()
+    private fun startForegroundService() {
+        startTime()
         isTracking.postValue(true)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
-           as NotificationManager
+                as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(notificationManager)
         }
         val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
@@ -191,25 +193,25 @@ class TrackingService : LifecycleService(){
             .setContentText("00:00:00")
             .setContentIntent(getMainActivityPendingIntent())
 
-        startForeground(NOTIFICATION_ID,notificationBuilder.build())
+        startForeground(NOTIFICATION_ID, notificationBuilder.build())
     }
 
     private fun getMainActivityPendingIntent() = PendingIntent.getActivity(
         this,
         0,
-        Intent(this,MainActivity::class.java).also {
+        Intent(this, MainActivity::class.java).also {
             it.action = ACTION_SHOW_TRACKING_FRAGMENT
         },
         FLAG_UPDATE_CURRENT
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel (notificationManager: NotificationManager){
-          val channel = NotificationChannel(
-              NOTIFICATION_CHANNEL_ID,
-              NOTIFICATION_CHANNEL_NAME,
-              IMPORTANCE_LOW
-          )
+    private fun createNotificationChannel(notificationManager: NotificationManager) {
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            NOTIFICATION_CHANNEL_NAME,
+            IMPORTANCE_LOW
+        )
         notificationManager.createNotificationChannel(channel)
     }
 
