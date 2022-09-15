@@ -19,6 +19,7 @@ import com.example.trackapp.ui.viewModels.MainViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_tracking.*
 
@@ -99,6 +100,21 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         if (curTimeInMillis > 0L){
             this.menu?.getItem(0)?.isVisible = true
         }
+    }
+
+    private fun showCancelTrackingDialog(){
+        val dialog = MaterialAlertDialogBuilder(requireContext(),R.style.AlertDialogTheme)
+            .setTitle("Cancel the Run?")
+            .setMessage("Are you sure to cancel the current run and delete all this data?")
+            .setIcon(R.drawable.ic_delete)
+            .setPositiveButton("Yes"){ _,_ ->
+                stopRun()
+            }
+            .setNegativeButton("No"){ dialogInterface , _ ->
+                dialogInterface.cancel()
+            }
+            .create()
+           dialog.show()
     }
 
     private fun updateTracking(isTracking : Boolean){
