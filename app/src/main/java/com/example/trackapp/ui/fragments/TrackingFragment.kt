@@ -90,7 +90,11 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_tracking_menu,menu)
+        this.menu = menu
     }
+
+    
 
     private fun updateTracking(isTracking : Boolean){
         this.isTracking = isTracking
