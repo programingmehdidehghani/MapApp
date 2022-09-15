@@ -173,9 +173,11 @@ class TrackingService : LifecycleService() {
             isAccessible = true
             set(curNotificationBuilder,ArrayList<NotificationCompat.Action>())
         }
-        curNotificationBuilder = baseNotificationBuilder
-            .addAction(R.drawable.ic_pause_black_24dp,notificationActionText,pendingIntent)
-        notificationManager.notify(NOTIFICATION_ID,curNotificationBuilder.build())
+        if (!serviceKilled){
+            curNotificationBuilder = baseNotificationBuilder
+                .addAction(R.drawable.ic_pause_black_24dp,notificationActionText,pendingIntent)
+            notificationManager.notify(NOTIFICATION_ID,curNotificationBuilder.build())
+        }
     }
 
     private fun updateLocationTracking(isTracking: Boolean) {
@@ -241,9 +243,11 @@ class TrackingService : LifecycleService() {
         startForeground(NOTIFICATION_ID, baseNotificationBuilder.build())
 
         timeRunInSeconds.observe(this, Observer {
-            val notification = curNotificationBuilder
-                .setContentText(TrackingUtility.getFormattedStopWatchTime(it * 1000))
-            notificationManager.notify(NOTIFICATION_ID,notification.build())
+            if (!serviceKilled){
+                val notification = curNotificationBuilder
+                    .setContentText(TrackingUtility.getFormattedStopWatchTime(it * 1000))
+                notificationManager.notify(NOTIFICATION_ID,notification.build())
+            }
         })
     }
 
