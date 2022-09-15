@@ -48,7 +48,7 @@ class TrackingService : LifecycleService() {
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
-    private val timeRunInSecond = MutableLiveData<Long>()
+    private val timeRunInSeconds = MutableLiveData<Long>()
 
     companion object {
         val timeRunInMillis = MutableLiveData<Long>()
@@ -59,6 +59,8 @@ class TrackingService : LifecycleService() {
     private fun postInitialValves() {
         isTracking.postValue(false)
         pathPoints.postValue(mutableListOf())
+        timeRunInSeconds.postValue(0L)
+        timeRunInMillis.postValue(0L)
     }
 
     override fun onCreate() {
@@ -113,7 +115,7 @@ class TrackingService : LifecycleService() {
                 lapTime = System.currentTimeMillis() - timeStarted
                 timeRunInMillis.postValue(timeRun + lapTime)
                 if (timeRunInMillis.value!! >= lastSecondTimeStamp + 1000L) {
-                    timeRunInSecond.postValue(timeRunInSecond.value!! + 1)
+                    timeRunInSeconds.postValue(timeRunInSeconds.value!! + 1)
                     lastSecondTimeStamp += 1000L
                 }
                 delay(TIME_UPDATE_INTERVAL)
