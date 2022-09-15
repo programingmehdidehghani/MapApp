@@ -6,9 +6,11 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.trackapp.R
 import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.trackapp.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.example.trackapp.other.Constants.ACTION_STOP_SERVICE
 import com.example.trackapp.other.Constants.MAP_ZOOM
 import com.example.trackapp.other.Constants.POLYLINE_COLOR
 import com.example.trackapp.other.Constants.POLYLINE_WIDTH
@@ -115,6 +117,11 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             }
             .create()
            dialog.show()
+    }
+
+    private fun stopRun(){
+        sendCommandToService(ACTION_STOP_SERVICE)
+        findNavController().navigate(R.id.action_trackingFragment_to_runFragment)
     }
 
     private fun updateTracking(isTracking : Boolean){
