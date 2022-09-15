@@ -32,6 +32,9 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 typealias polyLine = MutableList<LatLng>
@@ -46,7 +49,7 @@ class TrackingService : LifecycleService(){
     private val timeRunInSecond = MutableLiveData<Long>()
 
     companion object {
-        val timeRunMillis = MutableLiveData<Long>()
+        val timeRunInMillis = MutableLiveData<Long>()
         val isTracking = MutableLiveData<Boolean>()
         val pathPoints = MutableLiveData<polyLines>()
     }
@@ -92,11 +95,27 @@ class TrackingService : LifecycleService(){
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private var isTimeEnable = false
+    private var isTimerEnable = false
     private var lapTime = 0L
     private var timeRun = 0L
     private var timeStarted = 0L
     private var lastSecondTimeStamp = 0L
+
+    private fun startTime (){
+        addEmptyPolyline()
+        isTracking.postValue(true)
+        timeStarted = System.currentTimeMillis()
+        isTimerEnable = true
+        CoroutineScope(Dispatchers.Main).launch {
+            while (isTracking.value!!){
+                lapTime = System.currentTimeMillis() - timeStarted
+                timeRunInMillis.postValue(timeRun + lapTime)
+                if (timeRunInMillis.value!! >= lastSecondTimeStamp + 1000L){
+
+                }
+            }
+        }
+    }
 
     private fun pauseService(){
           isTracking.postValue(false)
