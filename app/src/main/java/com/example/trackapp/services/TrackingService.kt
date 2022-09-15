@@ -25,6 +25,7 @@ import com.example.trackapp.other.Constants.LOCATION_UPDATE_INTERVAL
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.trackapp.other.Constants.NOTIFICATION_ID
+import com.example.trackapp.other.Constants.TIME_UPDATE_INTERVAL
 import com.example.trackapp.other.TrackingUtility
 import com.example.trackapp.ui.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -34,6 +35,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -111,8 +113,10 @@ class TrackingService : LifecycleService(){
                 lapTime = System.currentTimeMillis() - timeStarted
                 timeRunInMillis.postValue(timeRun + lapTime)
                 if (timeRunInMillis.value!! >= lastSecondTimeStamp + 1000L){
-
+                     timeRunInSecond.postValue(timeRunInSecond.value!! + 1)
+                     lastSecondTimeStamp += 1000L
                 }
+                delay(TIME_UPDATE_INTERVAL)
             }
         }
     }
