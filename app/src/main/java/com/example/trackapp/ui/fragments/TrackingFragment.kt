@@ -3,7 +3,6 @@ package com.example.trackapp.ui.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -17,7 +16,7 @@ import com.example.trackapp.other.Constants.POLYLINE_COLOR
 import com.example.trackapp.other.Constants.POLYLINE_WIDTH
 import com.example.trackapp.other.TrackingUtility
 import com.example.trackapp.services.TrackingService
-import com.example.trackapp.services.polyLine
+import com.example.trackapp.services.PolyLine
 import com.example.trackapp.ui.viewModels.MainViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -34,7 +33,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private val viewModel: MainViewModel by viewModels()
 
     private var isTracking = false
-    private var pathPoints = mutableListOf<polyLine>()
+    private var pathPoints = mutableListOf<PolyLine>()
 
     private var map: GoogleMap? = null
 
@@ -177,7 +176,9 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     }
 
     private fun endRunAndSaveToDb(){
-        
+        map?.snapshot { bmb ->
+
+        }
     }
 
     private fun addAllPolylines() {

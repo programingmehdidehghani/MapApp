@@ -17,7 +17,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.trackapp.R
 import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
-import com.example.trackapp.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.trackapp.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.trackapp.other.Constants.ACTION_STOP_SERVICE
 import com.example.trackapp.other.Constants.FASTEST_LOCATION_INTERVAL
@@ -27,7 +26,6 @@ import com.example.trackapp.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.trackapp.other.Constants.NOTIFICATION_ID
 import com.example.trackapp.other.Constants.TIME_UPDATE_INTERVAL
 import com.example.trackapp.other.TrackingUtility
-import com.example.trackapp.ui.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -41,8 +39,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-typealias polyLine = MutableList<LatLng>
-typealias polyLines = MutableList<polyLine>
+typealias PolyLine = MutableList<LatLng>
+typealias PolyLines = MutableList<PolyLine>
 
 @AndroidEntryPoint
 class TrackingService : LifecycleService() {
@@ -65,7 +63,7 @@ class TrackingService : LifecycleService() {
     companion object {
         val timeRunInMillis = MutableLiveData<Long>()
         val isTracking = MutableLiveData<Boolean>()
-        val pathPoints = MutableLiveData<polyLines>()
+        val pathPoints = MutableLiveData<PolyLines>()
     }
 
     private fun postInitialValves() {

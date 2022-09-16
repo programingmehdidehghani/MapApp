@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import pub.devrel.easypermissions.EasyPermissions
 import android.Manifest
+import com.example.trackapp.services.PolyLine
 import java.util.concurrent.TimeUnit
 
 object TrackingUtility {
@@ -23,6 +24,10 @@ object TrackingUtility {
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             )
         }
+
+    fun calculatePolylineLength(polyLine: PolyLine) : Float{
+
+    }
 
     fun getFormattedStopWatchTime(ms : Long , includeMillis : Boolean = false) : String{
         var milliSeconds = ms
