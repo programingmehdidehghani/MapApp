@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.trackapp.R
 import com.example.trackapp.db.Run
+import com.example.trackapp.other.TrackingUtility
 import kotlinx.android.synthetic.main.item_run.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -51,6 +52,17 @@ class RunAdapter : RecyclerView.Adapter<RunAdapter.RunViewHolder>(){
             }
             val dataFormat = SimpleDateFormat("yy.MM.dd",Locale.getDefault())
             tvDate.text = dataFormat.format(calender.time)
+
+            val avgSpeed = "${run.avgSpeedInKMH}km/h"
+            tvAvgSpeed.text = avgSpeed
+
+            val distanceInKm = "${run.distanceInMeters / 1000f}km"
+            tvDistance.text = distanceInKm
+
+            tvTime.text = TrackingUtility.getFormattedStopWatchTime(run.timeInMillis)
+
+            val caloriesBurned = "${run.caloriesBurned}kcal"
+            tvCalories.text = caloriesBurned
         }
     }
 
