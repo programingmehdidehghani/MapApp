@@ -1,6 +1,7 @@
 package com.example.trackapp.ui.fragments
 
 import android.content.Intent
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -25,6 +26,8 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_tracking.*
+import java.util.*
+import kotlin.math.round
 
 
 @AndroidEntryPoint
@@ -160,8 +163,8 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
     private fun zoomToSeeWholeTrack() {
         val bounds = LatLngBounds.builder()
-        for (polyline in pathPoints){
-            for (pos in polyline){
+        for (polyline in pathPoints) {
+            for (pos in polyline) {
                 bounds.include(pos)
             }
         }
@@ -175,9 +178,14 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         )
     }
 
-    private fun endRunAndSaveToDb(){
+    private fun endRunAndSaveToDb() {
         map?.snapshot { bmb ->
-
+            var dintanceInMeters = 0
+            for (polyline in pathPoints){
+                dintanceInMeters += TrackingUtility.calculatePolylineLength(polyline).toInt()
+            }
+            val avgSpeed = round((dintanceInMeters / 1000f) / (curTimeInMillis / 1000f / 60 / 60) * 10) / 10
+            val dataTimeStamp = java.util.Calendar.getInstance().timeInMillis
         }
     }
 
