@@ -1,10 +1,12 @@
 package com.example.trackapp.adapters
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.trackapp.R
 import com.example.trackapp.db.Run
 
 class RunAdapter : RecyclerView.Adapter<RunAdapter.RunViewHolder>(){
@@ -26,7 +28,13 @@ class RunAdapter : RecyclerView.Adapter<RunAdapter.RunViewHolder>(){
     fun submitList(list: List<Run>) = differ.submitList(list)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RunViewHolder {
-        TODO("Not yet implemented")
+        return RunViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_run,
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: RunViewHolder, position: Int) {
