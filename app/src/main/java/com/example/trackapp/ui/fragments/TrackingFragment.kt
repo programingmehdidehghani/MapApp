@@ -3,6 +3,7 @@ package com.example.trackapp.ui.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -20,6 +21,7 @@ import com.example.trackapp.services.polyLine
 import com.example.trackapp.ui.viewModels.MainViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,12 +31,12 @@ import kotlinx.android.synthetic.main.fragment_tracking.*
 @AndroidEntryPoint
 class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
-    private val viewModel : MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     private var isTracking = false
     private var pathPoints = mutableListOf<polyLine>()
 
-    private var map : GoogleMap? = null
+    private var map: GoogleMap? = null
 
     private var curTimeInMillis = 0L
 
@@ -57,7 +59,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             toggleRun()
         }
 
-        mapView.getMapAsync{
+        mapView.getMapAsync {
             map = it
             addAllPolylines()
         }
@@ -65,26 +67,26 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         subscribeToObservers()
     }
 
-    private fun subscribeToObservers(){
+    private fun subscribeToObservers() {
         TrackingService.isTracking.observe(viewLifecycleOwner, Observer {
             updateTracking(it)
         })
 
-        TrackingService.pathPoints.observe(viewLifecycleOwner , Observer {
+        TrackingService.pathPoints.observe(viewLifecycleOwner, Observer {
             pathPoints = it
             addLatestPolyline()
             moveCameraToUser()
         })
 
-        TrackingService.timeRunInMillis.observe(viewLifecycleOwner , Observer {
+        TrackingService.timeRunInMillis.observe(viewLifecycleOwner, Observer {
             curTimeInMillis = it
             val formattedTime = TrackingUtility.getFormattedStopWatchTime(curTimeInMillis, true)
             tvTimer.text = formattedTime
         })
     }
 
-    private fun toggleRun () {
-        if (isTracking){
+    private fun toggleRun() {
+        if (isTracking) {
             menu?.getItem(0)?.isVisible = true
             sendCommandToService(ACTION_PAUSE_SERVICE)
         } else {
@@ -94,34 +96,34 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_tracking_menu,menu)
+        inflater.inflate(R.menu.toolbar_tracking_menu, menu)
         this.menu = menu
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        if (curTimeInMillis > 0L){
+        if (curTimeInMillis > 0L) {
             this.menu?.getItem(0)?.isVisible = true
         }
     }
 
-    private fun showCancelTrackingDialog(){
-        val dialog = MaterialAlertDialogBuilder(requireContext(),R.style.AlertDialogTheme)
+    private fun showCancelTrackingDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle("Cancel the Run?")
             .setMessage("Are you sure to cancel the current run and delete all this data?")
             .setIcon(R.drawable.ic_delete)
-            .setPositiveButton("Yes"){ _,_ ->
+            .setPositiveButton("Yes") { _, _ ->
                 stopRun()
             }
-            .setNegativeButton("No"){ dialogInterface , _ ->
+            .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
             }
             .create()
-           dialog.show()
+        dialog.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.miCancelTracking -> {
                 showCancelTrackingDialog()
             }
@@ -129,15 +131,15 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun stopRun(){
+    private fun stopRun() {
         sendCommandToService(ACTION_STOP_SERVICE)
         findNavController().navigate(R.id.action_trackingFragment_to_runFragment)
     }
 
-    private fun updateTracking(isTracking : Boolean){
+    private fun updateTracking(isTracking: Boolean) {
         this.isTracking = isTracking
-        if (!isTracking){
-           btnToggleRun.text = "Start"
+        if (!isTracking) {
+            btnToggleRun.text = "Start"
             btnFinishRun.visibility = View.VISIBLE
         } else {
             btnFinishRun.text = "Stop"
@@ -146,19 +148,29 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         }
     }
 
-    private fun moveCameraToUser(){
-        if (pathPoints.isNotEmpty() && pathPoints.last().isNotEmpty()){
-              map?.animateCamera(
-                  CameraUpdateFactory.newLatLngZoom(
-                      pathPoints.last().last(),
-                      MAP_ZOOM
-                  )
-              )
+    private fun moveCameraToUser() {
+        if (pathPoints.isNotEmpty() && pathPoints.last().isNotEmpty()) {
+            map?.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    pathPoints.last().last(),
+                    MAP_ZOOM
+                )
+            )
         }
     }
 
-    private fun addAllPolylines (){
+    private fun zoomToSeeWholeTrack() {
+        val bounds = LatLngBounds.builder()
         for (polyline in pathPoints){
+            for (pos in polyline){
+                bounds.include(pos)
+            }
+
+        }
+    }
+
+    private fun addAllPolylines() {
+        for (polyline in pathPoints) {
             val polylineOptions = PolylineOptions()
                 .color(POLYLINE_COLOR)
                 .width(POLYLINE_WIDTH)
@@ -167,9 +179,9 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         }
     }
 
-    private fun addLatestPolyline(){
-        if (pathPoints.isEmpty() && pathPoints.last().size > 1){
-            val preLastLatLng = pathPoints.last()[pathPoints.last().size -2]
+    private fun addLatestPolyline() {
+        if (pathPoints.isEmpty() && pathPoints.last().size > 1) {
+            val preLastLatLng = pathPoints.last()[pathPoints.last().size - 2]
             val lastLatLng = pathPoints.last().last()
             val polylineOptions = PolylineOptions()
                 .color(POLYLINE_COLOR)
@@ -180,8 +192,8 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         }
     }
 
-    private fun sendCommandToService(action : String) =
-        Intent(requireContext(),TrackingService::class.java).also{
+    private fun sendCommandToService(action: String) =
+        Intent(requireContext(), TrackingService::class.java).also {
             it.action = action
             requireContext().startService(it)
         }
