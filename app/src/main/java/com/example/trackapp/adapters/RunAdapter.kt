@@ -6,8 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.trackapp.R
 import com.example.trackapp.db.Run
+import kotlinx.android.synthetic.main.item_run.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RunAdapter : RecyclerView.Adapter<RunAdapter.RunViewHolder>(){
 
@@ -38,11 +42,20 @@ class RunAdapter : RecyclerView.Adapter<RunAdapter.RunViewHolder>(){
     }
 
     override fun onBindViewHolder(holder: RunViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        val run = differ.currentList[position]
+        holder.itemView.apply {
+            Glide.with(this).load(run.img).into(ivRunImage)
+
+            val calender = Calendar.getInstance().apply {
+                timeInMillis = run.timeStamp
+            }
+            val dataFormat = SimpleDateFormat("yy.MM.dd",Locale.getDefault())
+            tvDate.text = dataFormat.format(calender.time)
+        }
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return differ.currentList.size
     }
 
 }
