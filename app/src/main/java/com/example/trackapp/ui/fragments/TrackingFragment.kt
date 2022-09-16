@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.trackapp.R
+import com.example.trackapp.db.Run
 import com.example.trackapp.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.trackapp.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.trackapp.other.Constants.ACTION_STOP_SERVICE
@@ -43,6 +44,8 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private var curTimeInMillis = 0L
 
     private var menu: Menu? = null
+
+    private var weight = 80f
 
 
     override fun onCreateView(
@@ -186,6 +189,8 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             }
             val avgSpeed = round((dintanceInMeters / 1000f) / (curTimeInMillis / 1000f / 60 / 60) * 10) / 10
             val dataTimeStamp = java.util.Calendar.getInstance().timeInMillis
+            val caloriesBurned = ((dintanceInMeters / 1000f) * weight).toInt()
+            val run = Run(bmb,dataTimeStamp,avgSpeed,dintanceInMeters,curTimeInMillis,caloriesBurned)
         }
     }
 
