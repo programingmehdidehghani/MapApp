@@ -165,8 +165,15 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             for (pos in polyline){
                 bounds.include(pos)
             }
-
         }
+        map?.moveCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                bounds.build(),
+                mapView.width,
+                mapView.height,
+                (mapView.height * 0.05f).toInt()
+            )
+        )
     }
 
     private fun addAllPolylines() {
