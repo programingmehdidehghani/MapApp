@@ -176,6 +176,10 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         )
     }
 
+    private fun endRunAndSaveToDb(){
+        
+    }
+
     private fun addAllPolylines() {
         for (polyline in pathPoints) {
             val polylineOptions = PolylineOptions()
