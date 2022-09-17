@@ -13,4 +13,6 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
     private val viewModel : StatisticsViewModel by viewModels()
 
+    
+
 }
