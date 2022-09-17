@@ -28,7 +28,31 @@ class MainViewModel @Inject constructor(
     val sortType = SortType.DATA
 
     init {
-        
+        runs.addSource(runsSortedByDate){ result ->
+            if (sortType == SortType.DATA){
+                result?.let { runs.value = it }
+            }
+        }
+        runs.addSource(runsSortedByAvgSpeed){ result ->
+            if (sortType == SortType.AVG_SPEED){
+                result?.let { runs.value = it }
+            }
+        }
+        runs.addSource(runsSortedByCaloriesBurned){ result ->
+            if (sortType == SortType.CALORIES_BURNED){
+                result?.let { runs.value = it }
+            }
+        }
+        runs.addSource(runsSortedByDistance){ result ->
+            if (sortType == SortType.DISTANCE){
+                result?.let { runs.value = it }
+            }
+        }
+        runs.addSource(runsSortedByTimeInMillis){ result ->
+            if (sortType == SortType.RUNNING_TIME){
+                result?.let { runs.value = it }
+            }
+        }
     }
 
 
