@@ -1,10 +1,12 @@
 package com.example.trackapp.di
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.provider.DocumentsContract
 import androidx.room.Room
 import com.example.trackapp.db.RunningDataBase
 import com.example.trackapp.other.Constants.RUNNING_DATABASE_NAME
+import com.example.trackapp.other.Constants.SHARED_PREFERENCES_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +33,11 @@ object AppModule {
     @Singleton
     @Provides
     fun provideRunDao(db : RunningDataBase) = db.getRunDao()
+
+    @Singleton
+    @Provides
+    fun providesSharedPreferences(@ApplicationContext app: Context){
+        app.getSharedPreferences(SHARED_PREFERENCES_NAME,MODE_PRIVATE)
+    }
 
 }
