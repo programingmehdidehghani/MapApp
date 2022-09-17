@@ -55,6 +55,6 @@ object AppModule {
     @Singleton
     @Provides
     fun provideFirstTimeToggle(sharedPref : SharedPreferences) = sharedPref.getBoolean(
-        KEY_FIRST_TIME_TOGGLE, true) 
+        KEY_FIRST_TIME_TOGGLE, true)
 
 }
