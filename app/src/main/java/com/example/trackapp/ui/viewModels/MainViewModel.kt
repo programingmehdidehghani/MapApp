@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.trackapp.db.Run
+import com.example.trackapp.other.SortType
 import com.example.trackapp.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,6 +24,13 @@ class MainViewModel @Inject constructor(
 
 
     val runs = MediatorLiveData<List<Run>>()
+
+    val sortType = SortType.DATA
+
+    init {
+        
+    }
+
 
     fun insertRun(run: Run) = viewModelScope.launch {
         mainRepository.insertRun(run)
