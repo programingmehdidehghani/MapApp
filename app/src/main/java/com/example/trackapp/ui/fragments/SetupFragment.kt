@@ -11,6 +11,7 @@ import com.example.trackapp.R
 import com.example.trackapp.other.Constants.KEY_FIRST_TIME_TOGGLE
 import com.example.trackapp.other.Constants.KEY_NAME
 import com.example.trackapp.other.Constants.KEY_WEIGHT
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_setup.*
@@ -26,7 +27,12 @@ class SetupFragment : Fragment(R.layout.fragment_setup) {
         super.onViewCreated(view, savedInstanceState)
 
         tvContinue.setOnClickListener {
-            findNavController().navigate(R.id.action_setupFragment_to_runFragment)
+            val success = writePersonalDataToSharedPref()
+            if (success){
+                findNavController().navigate(R.id.action_setupFragment_to_runFragment)
+            }else{
+                Snackbar.make(requireView(),"Please enter all the field",Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
