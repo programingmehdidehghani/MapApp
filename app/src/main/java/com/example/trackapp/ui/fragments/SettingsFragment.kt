@@ -7,9 +7,13 @@ import androidx.fragment.app.Fragment
 import com.example.trackapp.R
 import com.example.trackapp.other.Constants.KEY_NAME
 import com.example.trackapp.other.Constants.KEY_WEIGHT
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.fragment_setup.*
+import kotlinx.android.synthetic.main.fragment_setup.etName
+import kotlinx.android.synthetic.main.fragment_setup.etWeight
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -21,7 +25,14 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+       btnApplyChanges.setOnClickListener {
+           val success = applyChangesTpSharedPref()
+           if (success){
+               Snackbar.make(view,"Saved changes",Snackbar.LENGTH_LONG).show()
+           } else {
+               Snackbar.make(view,"Please fill out all the fields",Snackbar.LENGTH_LONG).show()
+           }
+       }
     }
 
     private fun loadFieldsFromSharedPref(){
