@@ -1,6 +1,8 @@
 package com.example.trackapp.ui.fragments
 
 import android.content.SharedPreferences
+import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.trackapp.R
 import com.example.trackapp.other.Constants.KEY_NAME
@@ -15,6 +17,19 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+    }
+
+    private fun loadFieldsFromSharedPref(){
+        val name = sharedPreferences.getString(KEY_NAME,"")
+        val weight = sharedPreferences.getFloat(KEY_WEIGHT,80f)
+        etName.setText(name)
+        etWeight.setText(weight.toString())
+    }
 
     private fun applyChangesTpSharedPref() : Boolean{
         val nameText = etName.text.toString()
