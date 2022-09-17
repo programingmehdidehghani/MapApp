@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -40,7 +41,20 @@ class RunFragment : Fragment(R.layout.fragment_run) , EasyPermissions.Permission
             SortType.CALORIES_BURNED -> spFilter.setSelection(4)
         }
 
-        spFilter
+        spFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+                when(pos){
+                    0 -> viewModel.sortsRun(SortType.DATA)
+                    1 -> viewModel.sortsRun(SortType.RUNNING_TIME)
+                    2 -> viewModel.sortsRun(SortType.DISTANCE)
+                    3 -> viewModel.sortsRun(SortType.AVG_SPEED)
+                    4 -> viewModel.sortsRun(SortType.CALORIES_BURNED)
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+        }
 
         viewModel.runs.observe(viewLifecycleOwner, Observer {
             runAdapter.submitList(it)
