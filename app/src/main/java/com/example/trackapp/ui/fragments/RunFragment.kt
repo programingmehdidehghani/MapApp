@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackapp.R
 import com.example.trackapp.adapters.RunAdapter
 import com.example.trackapp.other.Constants.REQUEST_CODE_LOCATION_PERMISSION
+import com.example.trackapp.other.SortType
 import com.example.trackapp.other.TrackingUtility
 import com.example.trackapp.ui.viewModels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +32,17 @@ class RunFragment : Fragment(R.layout.fragment_run) , EasyPermissions.Permission
         requestPermissions()
         setupRecyclerView()
 
-        viewModel.runsSortedByDate.observe(viewLifecycleOwner, Observer {
+        when(viewModel.sortType){
+            SortType.DATA -> spFilter.setSelection(0)
+            SortType.RUNNING_TIME -> spFilter.setSelection(1)
+            SortType.DISTANCE -> spFilter.setSelection(2)
+            SortType.AVG_SPEED -> spFilter.setSelection(3)
+            SortType.CALORIES_BURNED -> spFilter.setSelection(4)
+        }
+
+        spFilter
+
+        viewModel.runs.observe(viewLifecycleOwner, Observer {
             runAdapter.submitList(it)
         })
 

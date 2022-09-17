@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(
 
     val runs = MediatorLiveData<List<Run>>()
 
-    val sortType = SortType.DATA
+    var sortType = SortType.DATA
 
     init {
         runs.addSource(runsSortedByDate){ result ->
@@ -61,6 +61,8 @@ class MainViewModel @Inject constructor(
         SortType.AVG_SPEED -> runsSortedByAvgSpeed.value?.let { runs.value = it }
         SortType.DISTANCE -> runsSortedByDistance.value?.let { runs.value = it }
         SortType.CALORIES_BURNED -> runsSortedByCaloriesBurned.value?.let { runs.value = it }
+    }.also {
+        this.sortType = sortType
     }
 
 
