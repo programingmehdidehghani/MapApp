@@ -1,5 +1,6 @@
 package com.example.trackapp.ui.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import com.example.trackapp.R
 import com.example.trackapp.other.TrackingUtility
 import com.example.trackapp.ui.viewModels.MainViewModel
 import com.example.trackapp.ui.viewModels.StatisticsViewModel
+import com.github.mikephil.charting.components.XAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import kotlin.math.round
@@ -22,6 +24,21 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         subscribeToObserver()
+    }
+
+    private fun setupBarChart(){
+        barChart.xAxis.apply {
+            position = XAxis.XAxisPosition.BOTTOM
+            setDrawLabels(false)
+            axisLineColor = Color.WHITE
+            textColor = Color.WHITE
+            setDrawGridLines(false)
+        }
+        barChart.axisLeft.apply {
+            axisLineColor = Color.WHITE
+            textColor = Color.WHITE
+            setDrawGridLines(false)
+        }
     }
 
     private fun subscribeToObserver() {
