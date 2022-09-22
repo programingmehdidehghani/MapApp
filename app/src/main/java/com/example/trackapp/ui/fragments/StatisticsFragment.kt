@@ -10,7 +10,9 @@ import com.example.trackapp.R
 import com.example.trackapp.other.TrackingUtility
 import com.example.trackapp.ui.viewModels.MainViewModel
 import com.example.trackapp.ui.viewModels.StatisticsViewModel
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarEntry
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import kotlin.math.round
@@ -38,6 +40,15 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
             axisLineColor = Color.WHITE
             textColor = Color.WHITE
             setDrawGridLines(false)
+        }
+        barChart.axisRight.apply {
+            axisLineColor = Color.WHITE
+            textColor = Color.WHITE
+            setDrawGridLines(false)
+        }
+        barChart.apply {
+            description.text = "Avg Speed Over Time"
+            legend.isEnabled = false
         }
     }
 
@@ -67,6 +78,11 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
             it?.let {
                 val totalCalories = "${it}kcal"
                 tvTotalCalories.text = totalCalories
+            }
+        })
+        viewModel.runsSortedByData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                val allAvgSpeed = it.indices.map { i -> BarEntry(i.toFloat(), it[i].avgSpeedInKMH) }
             }
         })
     }
