@@ -3,6 +3,7 @@ package com.example.trackapp.ui.fragments
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -12,6 +13,8 @@ import com.example.trackapp.ui.viewModels.MainViewModel
 import com.example.trackapp.ui.viewModels.StatisticsViewModel
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_statistics.*
@@ -83,6 +86,12 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         viewModel.runsSortedByData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val allAvgSpeed = it.indices.map { i -> BarEntry(i.toFloat(), it[i].avgSpeedInKMH) }
+                val bardateSet = BarDataSet(allAvgSpeed,"Avg Speed Over Time").apply {
+                    valueTextColor = Color.WHITE
+                    color = ContextCompat.getColor(requireContext() , R.color.colorAccent)
+                }
+                barChart.data = BarData(bardateSet)
+                barChart.invalidate()
             }
         })
     }
