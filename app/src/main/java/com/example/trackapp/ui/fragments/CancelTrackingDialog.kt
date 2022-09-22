@@ -21,7 +21,7 @@ class CancelTrackingDialog : DialogFragment() {
             .setIcon(R.drawable.ic_delete)
             .setPositiveButton("Yes") { _, _ ->
                 vesListener?.let { yes ->
-
+                     yes()
                 }
             }
             .setNegativeButton("No") { dialogInterface, _ ->
