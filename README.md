@@ -9,5 +9,5 @@
 + DiffUtil in RecyclerView
 + Coroutines
 
-![Screenshot_20221111-153008_TrackApp](https://user-images.githubusercontent.com/74426462/201337655-b00388ea-f792-417e-8681-95964b65b063.jpg)
+![Screenshot_20221111-153008_TrackApp](https://user-images.githubusercontent.com/74426462/201338401-7c18b9d5-3a48-454c-bfe3-27510032fc6b.jpg)
 
